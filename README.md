@@ -18,7 +18,7 @@ Install `Rcvxclustr` from GitHub:
 ```r
 install.packages("devtools")
 library(devtools)
-devtools::install_github("JhZhang-1999/Rcvxclustr")
+devtools::install_github("statsle/Rcvxclustr")
 library(Rcvxclustr)
 ```
 
@@ -40,6 +40,7 @@ Two main functions are implemented, and other functions in the package are depen
 
 We first library all packages we need: 
 ```r
+library(clustRviz)
 library(MASS)
 library(Matrix)
 library(igraph)
@@ -47,6 +48,8 @@ library(gdata)
 library(Rcpp)
 library(clues)
 library(Rcvxclustr)
+library(ggplot2)
+library(RSNNS)
 ```
 
 In the simulation, there are *n=20* observations that belong to two distinct non-overlapping clusters. The data matrix *X* is generated according to the model *X<sub>i</sub>=U<sub>1</sub>+&epsilon;<sub>i</sub>* when *i* belongs to the first cluster, and *X<sub>i</sub>=U<sub>2</sub>+&epsilon;<sub>i</sub>* when *i* belongs to the second cluster. Here *U<sub>1</sub>* and *U<sub>2</sub>* subject to different *20*-dimensional multivariate Gaussian distribution with identical covariance matrix and different means. We also add outliers to the data, making some dimensions in some samples deviate a lot from its neighbors. The data is generated as follows: 
@@ -67,7 +70,7 @@ X[sample(1:(n*p),10)] <- outliers
 
 Then create the weight vector: 
 ```r
-wt.vec <- uni_weights(N,p)
+wt.vec <- uni_weights(n,p)
 ```
 
 Solve the convex clustering objective function: 
@@ -113,13 +116,14 @@ Adopting the CARP alrogithm of [Waylandt et al (2020)](https://www.tandfonline.c
 In the numerical section, we show the robustness of our proposed method using an artificial datag generated as follows: 
 
 ```r
-data.gen.mixed <- function(seed,N,p,out_entry_prop,out_form='arbitrary'){
+data.gen.mixed <- function(seed,N,p,out_entry_prop,out_form='arbitrary',noise_type='uniform'){
   set.seed(seed)
   mu1 <- rnorm(p,0,1)
   X1 <- mvrnorm(N,mu=mu1,Sigma=diag(1,p))
   mu2 <- c(rnorm(p/2,3,1),rnorm(p/2,-3,1))
   X2 <- mvrnorm(N,mu=mu2,Sigma=diag(1,p))
   X <- rbind(X1, X2)
+  X0<-X
   n = dim(X)[1]
   if (out_form == 'arbitrary'){
     out_num <- as.integer(n*p*out_entry_prop)
@@ -128,8 +132,20 @@ data.gen.mixed <- function(seed,N,p,out_entry_prop,out_form='arbitrary'){
       X[sample(1:(n*p),out_num)] <- outliers
     }
   }
+  else{
+    out_row <- as.integer(n*out_entry_prop)
+    out_rows <- sample(1:n,out_row)
+    out_sample <- c()
+    for (row in out_rows){
+      out_num <- as.integer(p*0.2)
+      out_cols<-sample(1:p,out_num)
+      out_sample<-c(out_sample,out_cols+(row-1)*p)
+      outliers <- runif(n=length(out_sample),min=10,max=20)
+      X[out_sample]<-outliers
+    }
+  }
   cl_true <- c(rep(1,N),rep(2,N))
-  return (list(X=X,cl_true=cl_true))
+  return (list(X0=X0,X=X,cl_true=cl_true))
 }
 seed <- 1262
 gen <- data.gen.mixed(seed,N=12,p=20,out_entry_prop = 0.01)
@@ -140,7 +156,7 @@ cl_true <- gen$cl_true
 Using the Eric method, we obtain:
 
 ```r
-result <- CARP_RCC(X,delta=15,zeta=0.1,phi=.1,method='cvx_uni',
+result <- CARP.RCC(X,phi=.1,method='cvx_uni',
                         lam.begin =0.01,lam.step=1.05,rho=1,tau=3,cl_true=cl_true,randmode='HA',max.log=200)
 result$cl_est
 [1] 1 1 1 2 1 1 1 1 1 1 3 1 4 4 4 4 4 4 5 4 4 4 4 4
@@ -149,13 +165,47 @@ result$cl_est
 Using the proposed method, we obtain: 
 
 ```r
-result <- CARP_RCC(X,delta=15,zeta=0.1,phi=.1,method='Rcvx_uni',
+result <- CARP.RCC(X,phi=.1,method='Rcvx_uni',
                         lam.begin =0.01,lam.step=1.05,rho=1,tau=3,cl_true=cl_true,randmode='HA',max.log=200)
 result$cl_est
 [1] 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2
 ```
 
-The path graph can be obtained from the `cl_matrix`, and the pictures are shown in the paper. 
+The path graph can be obtained from the `cl_matrix`, and the pictures are shown in the paper. When trying to add student t distribution noise, the data generation function ```data.gen.mixed``` could be replaced with the below:
+
+```r
+data.gen.mixed <- function(seed,N,p,out_entry_prop,df,out_form='arbitrary',noise_type='uniform'){
+  set.seed(seed)
+  mu1 <- rnorm(p,0,1)
+  X1 <- mvrnorm(N,mu=mu1,Sigma=diag(1,p))
+  mu2 <- c(rnorm(p/2,3,1),rnorm(p/2,-3,1))
+  X2 <- mvrnorm(N,mu=mu2,Sigma=diag(1,p))
+  X <- rbind(X1, X2)
+  X0<-X
+  n = dim(X)[1]
+  if (out_form == 'arbitrary'){
+    out_num <- as.integer(n*p*out_entry_prop)
+    outliers <- rt(n=out_num,df=df,ncp=0)
+    if (out_num > 0){
+      X[sample(1:(n*p),out_num)] <- outliers
+    }
+  }
+  else{
+    out_row <- as.integer(n*out_entry_prop)
+    out_rows <- sample(1:n,out_row)
+    out_sample <- c()
+    for (row in out_rows){
+      out_num <- as.integer(p*0.2)
+      out_cols<-sample(1:p,out_num)
+      out_sample<-c(out_sample,out_cols+(row-1)*p)
+      outliers <- rt(n=length(out_sample),df=df,ncp=0)
+      X[out_sample]<-outliers
+    }
+  }
+  cl_true <- c(rep(1,N),rep(2,N))
+  return (list(X0=X0,X=X,cl_true=cl_true))
+}
+```
 
 
 
