@@ -1,18 +1,18 @@
 Package: Rcvxclustr
-Maintainer: Jiahui Zhang <jiahuizhang99@gmail.com>
-Author: Chenyu Liu, Qiang Sun, Kean Ming Tan, Jiahui Zhang
-Version: 1.1.1
+Maintainer: Archer Gong Zhang <gozhang@live.com>
+Author: Qiang Sun, Archer Gong Zhang, Chenyu Liu, Kean Ming Tan, Jiahui Zhang
+Version: 1.2.1
 License: CC BY-NC-SA 4.0
 Title: Robust convex clustering: How does the fusion penalty enhance
         robustness?
 Description: Alternating Direction Method of Multipliers (ADMM) using Huber loss
      for convex clustering.
-Depends: R (>= 2.15.2), Matrix, igraph, gdata, Rcpp, MASS, clues, cvxclustr
-LazyData: true
-Packaged: 2021-01-08 22:53; jiahuizhang
+Depends: R (>= 2.15.2), Matrix, igraph, gdata, Rcpp, MASS, clues,
+        cvxclustr
+Packaged: 2024-09-14 18:24:40 UTC; archerzhang
 NeedsCompilation: yes
 Repository: CRAN
 LinkingTo: Rcpp, RcppArmadillo
 Date/Publication: 2014-07-28 08:28:25
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.3.1

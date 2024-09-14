@@ -1,4 +1,4 @@
-#' Robust Convex Clustering
+#' Robust Convex Clustering using CARP
 #'
 #' \code{CARP_RCC} performs convex clustering with the CARP algorithm. 
 #' The starting value and increment step of \code{lambda} can be set. 

@@ -1,4 +1,4 @@
-#' Robust Convex Clustering
+#' Robust Convex Clustering using ADMM with tuning for \code{lambda}
 #'
 #' \code{ADMM_RCC} performs convex clustering using the ADMM algorithm over an increasing sequence of \code{lambda} with warm start. 
 #' The starting value and increment step of \code{lambda} can be set. 
