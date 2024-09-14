@@ -122,7 +122,8 @@ Adopting the CARP algorithm of [Waylandt et al (2020)](https://www.tandfonline.c
 In our numerical studies, we show the robustness of our proposed method using the synthetic data generated as follows: 
 
 ```r
-data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='normal',outlier_type='uniform',df=NULL){
+data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,
+                           noise_type='normal',outlier_type='uniform',df=NULL){
   set.seed(seed)
   
   # normal noise with uniform outliers
@@ -226,21 +227,24 @@ data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='
 
 To generate synthetic data with Gaussian noise and uniform outliers with 2\% entry-wise contamination: 
 ```r
-gen <- data.gen.mixed(seed=2024,N=20,p=20,out_form='entry',out_entry_prop=0.02,noise_type='normal',outlier_type='uniform')
+gen <- data.gen.mixed(seed=2024,N=20,p=20,out_form='entry',out_entry_prop=0.02,
+                      noise_type='normal',outlier_type='uniform')
 X <- gen$X
 cl_true <- gen$cl_true
 ```
 
 To generate synthetic data with t noise (with df=5) and uniform outliers with 10\% entry-wise contamination: 
 ```r
-gen <- data.gen.mixed(seed=2024,N=20,p=20,out_form='entry',out_entry_prop=0.1,noise_type='t',outlier_type='uniform',df=5)
+gen <- data.gen.mixed(seed=2024,N=20,p=20,out_form='entry',out_entry_prop=0.1,
+                      noise_type='t',outlier_type='uniform',df=5)
 X <- gen$X
 cl_true <- gen$cl_true
 ```
 
 To generate synthetic data with Gaussian noise and t outliers (with df=1) with 50\% row-wise contamination: 
 ```r
-gen <- data.gen.mixed(seed=2024,N=20,p=20,out_form='row',out_entry_prop=0.5,noise_type='normal',outlier_type='t',df=1)
+gen <- data.gen.mixed(seed=2024,N=20,p=20,out_form='row',out_entry_prop=0.5,
+                      noise_type='normal',outlier_type='t',df=1)
 X <- gen$X
 cl_true <- gen$cl_true
 ```
@@ -251,12 +255,13 @@ cl_true <- gen$cl_true
 Using the cvxclustr method with uniform weights, we obtain:
 
 ```r
-gen <- data.gen.mixed(seed=2024,N=10,p=20,out_form='entry',out_entry_prop=0.02,noise_type='normal',outlier_type='uniform')
+gen <- data.gen.mixed(seed=2024,N=10,p=20,out_form='entry',out_entry_prop=0.02,
+                      noise_type='normal',outlier_type='uniform')
 X <- gen$X
 cl_true <- gen$cl_true
 result <- ADMM_RCC(X=X,phi=.1,method='cvx_uni',lam.begin=0.01,lam.step=1.05,
-                                    rho=1,tau=NULL,cl_true=cl_true,randmode='HA',
-                                    max.log=200,max.iter_cvx=100,max.iter_Rcvx=NULL)
+                   rho=1,tau=NULL,cl_true=cl_true,randmode='HA',
+                   max.log=200,max.iter_cvx=100,max.iter_Rcvx=NULL)
 result$cl_est
 [1]  1  1  1  2  3  1  1  1  1  1  4  5  6  7  8  9 10 11 12 13
 ```
@@ -264,12 +269,13 @@ result$cl_est
 Using the proposed Rcvxclustr method with uniform weights and $`\tau=0.1`$, we obtain: 
 
 ```r
-gen <- data.gen.mixed(seed=2024,N=10,p=20,out_form='entry',out_entry_prop=0.02,noise_type='normal',outlier_type='uniform')
+gen <- data.gen.mixed(seed=2024,N=10,p=20,out_form='entry',out_entry_prop=0.02,
+                      noise_type='normal',outlier_type='uniform')
 X <- gen$X
 cl_true <- gen$cl_true
 result <- ADMM_RCC(X=X,phi=.1,method='Rcvx_uni',lam.begin=0.01,lam.step=1.05,
-                                    rho=1,tau=0.1,cl_true=cl_true,randmode='HA',
-                                    max.log=200,max.iter_cvx=NULL,max.iter_Rcvx=100)
+                   rho=1,tau=0.1,cl_true=cl_true,randmode='HA',
+                   max.log=200,max.iter_cvx=NULL,max.iter_Rcvx=100)
 result$cl_est
 [1] 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2
 ```
