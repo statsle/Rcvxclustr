@@ -6,11 +6,11 @@
 
 ### Description
 
-This package implements the robust convex clustering problem proposed by [Liu, Sun and Tan (2019)](https://arxiv.org/abs/1906.09581v2). Classical approaches towards convex clustering solves a convex optimization problem with the cost function being a squared loss plus a fusion penalty that encourages the estimated centroids for observations in the same cluster to be identical. Those approaches are not robust to arbitrary outliers, and when data are contaminated, they fail to identify the correct cluster relationships. This proposed robust convex clustering algorithm, applying Huber loss and a modified weight function, performs well in cases with outliers. It does not break down until more than half of the observations are arbitrary outliers. 
+This R package `Rcvxclustr` implements the robust convex clustering problem proposed by [Liu, Sun and Tan (2019)](https://arxiv.org/abs/1906.09581v2). Classical approaches towards convex clustering solves a convex optimization problem with the cost function being a squared loss plus a fusion penalty that encourages the estimated centroids for observations in the same cluster to be identical. Those approaches are not robust to arbitrary outliers, and when data are contaminated, they fail to identify the correct cluster relationships. This proposed robust convex clustering algorithm, applying Huber loss and a modified weight function, performs well in cases with outliers. It does not break down until more than half of the observations are arbitrary outliers. 
 
 In a convex clustering problem, the input is a data matrix *X* of dimension *n*&times;*p*, with *n* is the number of samples and *p* the number of features. Convex clustering algorithm estimates a centroid matrix *U* of the same size as *X*, with *X<sub>i</sub>* and *X<sub>j</sub>* being in the same cluster if and only if *U<sub>i</sub>=U<sub>j</sub>*. 
 
-This proposed algorithm is a modified version of that proposed by [Chi and Lange (2015)](https://arxiv.org/abs/1304.0499), implemented in package `cvxclustr`. The two packages are compared in [our paper](https://arxiv.org/abs/1906.09581v2) and can be reproduced. 
+This proposed algorithm is a modified version of that proposed by [Chi and Lange (2015)](https://arxiv.org/abs/1304.0499), implemented in the R package `cvxclustr`. The two methods are compared in [our paper](https://arxiv.org/abs/1906.09581v2) and can be reproduced. 
 
 ### Installation
 
@@ -56,7 +56,7 @@ In the example, there are *n=50* observations that belong to two distinct non-ov
 
 ```r
 set.seed(1234)
-N <- 25
+N <- 50/2
 p <- 20
 mu1 <- mvrnorm(mu=rep(0,p),Sigma=diag(1,p))
 X1 <- mvrnorm(N,mu=mu1,Sigma=diag(1,p))
