@@ -107,10 +107,10 @@ In this case, the algorithm gets all the results correctly, that is, `cl` equals
       1       1       1       1       1 
 ```
 
-### The ADMM algorithm with parameter tuning for *\lambda*
+### The ADMM algorithm with parameter tuning for $`\lambda`$
 
-We use the ADMM algorithm to solve the optimization problem over an increasing sequence of *\lambda* values until all data points are clustered into one single cluster. To enhance computational efficiency, we employ a warm-start strategy, initializing the ADMM algorithm for a new *\lambda* with the solution obtained from the preceding *\lambda*. For each value of *\lambda*, we perform multiple iterations of the ADMM algorithm. 
-We report the best solution obtained along the path of increasing *\lambda*’s, measured by Hubert and Arabie’s adjusted Rand index (HA Rand index). 
+We use the ADMM algorithm to solve the optimization problem over an increasing sequence of $`\lambda`$ values until all data points are clustered into one single cluster. To enhance computational efficiency, we employ a warm-start strategy, initializing the ADMM algorithm for a new $`\lambda`$ with the solution obtained from the preceding $`\lambda`$. For each value of $`\lambda`$, we perform multiple iterations of the ADMM algorithm. 
+We report the best solution obtained along the path of increasing $`\lambda`$’s, measured by Hubert and Arabie’s adjusted Rand index (HA Rand index). 
 We use the function `ADMM_RCC` in the package to conduct the numerical experiments in our paper. 
 
 <!---
@@ -126,7 +126,7 @@ data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='
   set.seed(seed)
   
   # normal noise with uniform outliers
-  if (noise_type == 'normal' & outlier_type=='uniform'){
+  if (noise_type=='normal' & outlier_type=='uniform'){
     mu1 <- rnorm(p,0,1)
     X1 <- mvrnorm(N,mu=mu1,Sigma=diag(1,p))
     mu2 <- c(rnorm(p/2,3,1),rnorm(p/2,-3,1))
@@ -134,14 +134,14 @@ data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='
     X <- rbind(X1, X2)
     X0<-X #clean data
     n = dim(X)[1]
-    if (out_form == 'entry'){
+    if (out_form=='entry'){
       out_num <- as.integer(n*p*out_entry_prop)
       outliers <- runif(n=out_num,min=10,max=20)
       if (out_num > 0){
         X[sample(1:(n*p),out_num)] <- outliers
       }
     }
-    else if (out_form == 'row'){
+    else if (out_form=='row'){
       out_row <- as.integer(n*out_entry_prop)
       out_rows <- sample(1:n,out_row)
       out_num <- as.integer(p*0.2)
@@ -156,7 +156,7 @@ data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='
     }
   }
   # t noise with uniform outliers
-  else if (noise_type == 't' & outlier_type=='uniform'){
+  else if (noise_type=='t' & outlier_type=='uniform'){
     mu1 <- rnorm(p,0,1)
     X1 <- matrix(rep(mu1,each=N),nrow=N,ncol=p)+matrix(rt(n=N*p,df=df,ncp=0),nrow=N,ncol=p)
     mu2 <- c(rnorm(p/2,3,1),rnorm(p/2,-3,1))
@@ -164,14 +164,14 @@ data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='
     X <- rbind(X1, X2)
     X0<-X #clean data
     n = dim(X)[1]
-    if (out_form == 'entry'){
+    if (out_form=='entry'){
       out_num <- as.integer(n*p*out_entry_prop)
       outliers <- runif(n=out_num,min=10,max=20)
       if (out_num > 0){
         X[sample(1:(n*p),out_num)] <- outliers
       }
     }
-    else if (out_form == 'row'){
+    else if (out_form=='row'){
       out_row <- as.integer(n*out_entry_prop)
       out_rows <- sample(1:n,out_row)
       out_num <- as.integer(p*0.2)
@@ -186,7 +186,7 @@ data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='
     }
   }
   # normal noise with t outliers
-  else if (noise_type == 'normal' & outlier_type=='t'){
+  else if (noise_type=='normal' & outlier_type=='t'){
     mu1 <- rnorm(p,0,1)
     X1 <- mvrnorm(N,mu=mu1,Sigma=diag(1,p))
     mu2 <- c(rnorm(p/2,3,1),rnorm(p/2,-3,1))
@@ -194,14 +194,14 @@ data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='
     X <- rbind(X1, X2)
     X0<-X #clean data
     n = dim(X)[1]
-    if (out_form == 'entry'){
+    if (out_form=='entry'){
       out_num <- as.integer(n*p*out_entry_prop)
       outliers <- rt(n=out_num,df=df,ncp=0)
       if (out_num > 0){
         X[sample(1:(n*p),out_num)] <- outliers
       }
     }
-    else if (out_form == 'row'){
+    else if (out_form=='row'){
       out_row <- as.integer(n*out_entry_prop)
       out_rows <- sample(1:n,out_row)
       out_num <- as.integer(p*0.2)
@@ -259,7 +259,7 @@ result$cl_est
 [1]  1  1  1  2  3  1  1  1  1  1  4  5  6  7  8  9 10 11 12 13
 ```
 
-Using the proposed Rcvxclustr method with uniform weights and *\tau=0.1*, we obtain: 
+Using the proposed Rcvxclustr method with uniform weights and $`\tau=0.1`$, we obtain: 
 
 ```r
 gen <- data.gen.mixed(seed=2024,N=10,p=20,out_form='entry',out_entry_prop=0.02,noise_type='normal',outlier_type='uniform')
