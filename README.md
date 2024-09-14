@@ -75,14 +75,14 @@ wt.vec <- uni_weights(n,p)
 
 Solve the convex clustering objective function: 
 ```r
-H <- robustcvxclust(X,rho=1,tau=3,lambda=0.7,wt=wt.vec)
+H <- robustcvxclust(X,rho=1,tau=3,lambda=0.3,wt=wt.vec)
 ```
 
 The returned `H` contains the final outcome of matrix *U*, *W*, *Y*, *V*, *Z*, the iteration time, and the final tolerance level *&epsilon;*. 
 
 We use the output *V* (first dimension equals to the length of weight vector, and second dimension equals to *p*) to create the adjacency matrix: 
 ```r
-A <- create_adjacency_matrix(t(H$V),wt,n)
+A <- create_adjacency_matrix(t(H$V),wt.vec,n)
 ```
 
 Finally we can obtain the clustering results by
@@ -100,8 +100,8 @@ In this case, the algorithm gets all the results correctly, that is, `cl` equals
 
 ```r
 > cl
- [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2
-[28] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+ [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+[26] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
 > adjustedRand(cl_true,cl)
    Rand      HA      MA      FM Jaccard 
       1       1       1       1       1 
@@ -246,6 +246,8 @@ cl_true <- gen$cl_true
 ```
 
 
+### Results
+
 Using the cvxclustr method with uniform weights, we obtain:
 
 ```r
@@ -272,7 +274,7 @@ result$cl_est
 [1] 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2
 ```
 
-The path graph can be obtained from the `cl_matrix`, and the pictures are shown in the paper. 
+The path graph can be obtained from `result$path`, and some pictures are shown in the paper. 
 
 <!---
 When trying to add student t distribution noise, the data generation function ```data.gen.mixed``` could be replaced with the below:
