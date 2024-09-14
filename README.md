@@ -119,7 +119,7 @@ Adopting the CARP alrogithm of [Waylandt et al (2020)](https://www.tandfonline.c
 
 ### Synthetic data
 
-In the numerical section, we show the robustness of our proposed method using the synthetic data generated as follows: 
+In our numerical studies, we show the robustness of our proposed method using the synthetic data generated as follows: 
 
 ```r
 data.gen.mixed <- function(seed,N,p,out_form='entry',out_entry_prop,noise_type='normal',outlier_type='uniform',df=NULL){
