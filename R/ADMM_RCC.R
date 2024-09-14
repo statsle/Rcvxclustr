@@ -35,12 +35,12 @@
 #' @useDynLib Rcvxclustr
 
 ADMM_RCC <- function(X,phi,method,lam.begin,lam.step,rho,tau,cl_true,randmode,max.log,max.iter_cvx,max.iter_Rcvx){
+  n <- dim(X)[1]
+  p <- dim(X)[2]
   lams <- vector(length=max.log)
   rands <- vector(length=max.log)
   cl.matrix <- matrix(0,ncol=n,nrow=length(lams))
   U <- vector("list", length=max.log)
-  n <- dim(X)[1]
-  p <- dim(X)[2]
   d <- distance_matrix(X)
   wt.GK <- GKernel_weights(phi = phi,distance=d)
   wt.uni <- uni_weights(n,p)
