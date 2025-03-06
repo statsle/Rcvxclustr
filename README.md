@@ -28,7 +28,7 @@ Helper functions can be accessed by typing `help(function name)` in R command.
 
 Two main functions are implemented, and other functions in the package are dependencies. 
 
-- `robust_weights`: This function implements the new weight function applied in fusion penalty, proposed in [our paper]([https://arxiv.org/abs/1906.09581v2](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-19/issue-1/Resistant-convex-clustering--How-does-the-fusion-penalty-enhance/10.1214/25-EJS2359.full)). It returns the lower triangle part (in the form of vector) of the *n &times;n* weight matrix for data *X* with *n* rows (number of samples). 
+- `robust_weights`: This function implements the new weight function applied in fusion penalty, proposed in [our paper](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-19/issue-1/Resistant-convex-clustering--How-does-the-fusion-penalty-enhance/10.1214/25-EJS2359.full)). It returns the lower triangle part (in the form of vector) of the *n &times;n* weight matrix for data *X* with *n* rows (number of samples). 
 
 - `robustcvxclust`: This function implements the alternating direction method of multipliers algorithm for solving the convex clustering objective function. It returns the matrix of centroid differences, i.e. matrix *V*, with *U<sub>i</sub>-U<sub>i'</sub>=V<sub>ii'</sub>* for all *i<i'*. 
 
